@@ -1,12 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  /* 🎨 Semantic Color Palette */
+  /* 🎨 Brand Colors */
   --color-bg: #0f172a;
   --color-text: #f8fafc;
   --color-primary: #6366f1;
   --color-secondary: #ec4899;
   --color-accent: #a855f7;
+
+  /* 🏗️ Surface Layers (darkest → lightest) */
+  --color-surface: #0d1117;         /* Main app background */
+  --color-surface-nav: #0d1424;     /* Sticky navbar & notification ring */
+  --color-surface-overlay: #111827; /* Dropdowns, modals, elevated cards */
+
+  /* 📝 Text Opacity Scale */
+  --color-muted: rgba(248, 250, 252, 0.45);   /* Placeholders, decorative icons */
+  --color-dim: rgba(248, 250, 252, 0.40);     /* Secondary labels, muted icons */
+  --color-subdued: rgba(248, 250, 252, 0.60); /* Supporting / helper text */
+
+  /* 🔲 Borders & Dividers */
+  --color-divider: rgba(255, 255, 255, 0.06); /* Section separators */
+  --color-outline: rgba(255, 255, 255, 0.10); /* Component borders & rings */
+  --color-focus-ring: rgba(99, 102, 241, 0.30); /* Focused input border */
+
+  /* 🎛️ Interactive Backgrounds */
+  --color-faint: rgba(255, 255, 255, 0.04);   /* Input fields, very subtle cards */
+  --color-subtle: rgba(255, 255, 255, 0.06);  /* Hover states, focused inputs */
+
+  /* 🚨 Danger / Destructive */
+  --color-danger: #f87171;                          /* Destructive text */
+  --color-danger-surface: rgba(239, 68, 68, 0.10);  /* Destructive hover background */
 
   /* 🖋️ Typography */
   --font-display: "Inter", system-ui, sans-serif;
@@ -41,4 +64,16 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
+}
+
+/* 🔒 Override Browser Autofill Styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  /* bg-white/5 (#ffffff0d) blended over #0f172a = ~#1b2335 */
+  -webkit-box-shadow: 0 0 0 1000px #1b2335 inset !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #f8fafc;
+  transition: background-color 5000s ease-in-out 0s;
 }

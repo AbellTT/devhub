@@ -6,9 +6,12 @@ from .models import Comment
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created_at')
+    list_display = ('title', 'author', 'created_at','published')
     search_fields = ('title', 'content')
     list_filter = ('author', 'created_at')
+    def make_published(self,request,queryset):
+        queryset.update(published=True)
+    actions= ["make_published"]
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):

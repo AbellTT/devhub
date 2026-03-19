@@ -7,7 +7,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'author', 'author_name', 'title', 'content', 'created_at']
+        fields = ['id', 'author', 'author_name', 'title', 'content', 'created_at','published']
         read_only_fields =["author"]
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -77,7 +77,7 @@ export default function AuthLayout({ children, title, subtitle }) {
           </div>
 
           {/* Form Header */}
-          <div className="mb-10 text-center lg:text-left">
+          <div className="mb-5 text-center lg:text-left">
             <h2 className="text-3xl font-black italic mb-3">{title}</h2>
             <p className="text-text/60 font-medium">{subtitle}</p>
           </div>

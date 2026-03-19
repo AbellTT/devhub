@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import { Mail, Lock, User, ArrowRight, Github } from "lucide-react";
 import AuthLayout from "../components/layout/AuthLayout";
 import Button from "../components/ui/Button";
+import api from "../services/api"
+import { setCredentials } from "../store/authSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({ 
@@ -10,11 +14,35 @@ export default function SignupPage() {
     email: "", 
     password: "" 
   });
-
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Connect to Django JWT Backend
-    console.log("Signup submitted:", formData);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await api.post("/accounts/register/", formData);
+      const response2 = await api.post("/accounts/login/", {
+        username: formData.username,
+        password: formData.password
+      });
+      const access = response2.data.access;
+      const refresh = response2.data.refresh;
+      dispatch(setCredentials({ accessToken: access, refreshToken: refresh, user: null }));
+      navigate("/feed");
+    } catch (err) {
+      if (!err.response) {
+        setError('Cannot connect to the server. Please try again later.');
+      } else {
+        // Assuming Django Rest Framework error format
+        const backendError = err.response?.data; 
+        setError(backendError?.username?.[0] || backendError?.email?.[0] || backendError?.password?.[0] || "Registration failed. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -22,6 +50,12 @@ export default function SignupPage() {
       title="Create your account." 
       subtitle="Join the exclusive community of elite developers today."
     >
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl text-sm font-medium animate-pulse mb-5">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         
         {/* Username Input */}
@@ -32,6 +66,9 @@ export default function SignupPage() {
               <User className="w-5 h-5" />
             </div>
             <input 
+              id="username"
+              name="username"
+              autoComplete="username"
               type="text" 
               required
               className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-text placeholder:text-text/30 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all font-medium"
@@ -50,6 +87,9 @@ export default function SignupPage() {
               <Mail className="w-5 h-5" />
             </div>
             <input 
+              id="email"
+              name="email"
+              autoComplete="email"
               type="email" 
               required
               className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-text placeholder:text-text/30 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all font-medium"
@@ -68,6 +108,9 @@ export default function SignupPage() {
               <Lock className="w-5 h-5" />
             </div>
             <input 
+              id="password"
+              name="password"
+              autoComplete="new-password"
               type="password" 
               required
               className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-text placeholder:text-text/30 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all font-medium"
@@ -85,10 +128,11 @@ export default function SignupPage() {
             type="submit" 
             size="lg" 
             className="w-full"
-            icon={<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+            disabled={isLoading}
+            icon={!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             iconPosition="right"
           >
-            Create Account
+            {isLoading ? "Creating Account..." : "Create Account"}
           </Button>
 
           <Button 
