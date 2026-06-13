@@ -6,7 +6,7 @@ from .models import Comment
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created_at','published')
+    list_display = ('title', 'author', 'created_at','published','total_likes')
     search_fields = ('title', 'content')
     list_filter = ('author', 'created_at')
     def make_published(self,request,queryset):
@@ -15,6 +15,6 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('content','author__username','post__author')
+    list_display = ('content','author__username','post__author','total_likes')
     search_fields = ('author','post')
     list_filter = ('author','created')

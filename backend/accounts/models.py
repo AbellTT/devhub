@@ -11,7 +11,22 @@ class Profile(models.Model):
     developer_level = models.CharField(max_length=50, blank=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
     location = models.CharField(max_length=100, blank=True)
-    
+
+    # 🔗 Follow System: tracks who this user is following (self-referential)
+    following = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        blank=True,
+        related_name='followers'
+    )
+
+    # 🔖 Saved Posts: posts the user has bookmarked
+    saved_posts = models.ManyToManyField(
+        'posts.Post',
+        blank=True,
+        related_name='saved_by'
+    )
+
     def __str__(self):
         return f"{self.user.username}'s Profile"
 
